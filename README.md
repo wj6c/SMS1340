@@ -4,9 +4,15 @@ SUNMAN SMS1340 LCD mapping, Arduino Nano tests, and firmware development.
 
 ## Project
 
-This repository documents the development and testing of the SUNMAN SMS1340 LCD using an Arduino Nano ATmega328P.
+This repository documents the development and testing of the SUNMAN
+SMS1340 LCD using an Arduino Nano ATmega328P.
 
-The project started by mapping the physical LCD segments controlled by the original `z_addr[]` address table. The goal is to create a reliable reference for future SMS1340 firmware development.
+The project started by mapping the physical LCD segments controlled
+by the original `z_addr[]` address table. The goal is to create a
+reliable reference for future SMS1340 firmware development.
+
+The project is being developed progressively, with each verified
+stage saved as a separate reference sketch.
 
 ## Hardware
 
@@ -14,10 +20,14 @@ The project started by mapping the physical LCD segments controlled by the origi
 - SUNMAN SMS1340 LCD
 - LCD SCL: Arduino D6
 - LCD SDA: Arduino D7
+- Rotary Encoder A: Arduino D11
+- Rotary Encoder B: Arduino D12
+- STEP Button: Arduino D10
 
 ## Segment Mapping
 
-The SMS1340 address table contains 50 indexed elements, from INDEX 0 to INDEX 49.
+The SMS1340 address table contains 50 indexed elements, from
+INDEX 0 to INDEX 49.
 
 ### Confirmed Map
 
@@ -80,15 +90,29 @@ The SMS1340 address table contains 50 indexed elements, from INDEX 0 to INDEX 49
 
 This was confirmed using the `SMS1340_Segment_Mapper.ino` test program.
 
+The physical frequency digit addresses are:
+
+| Digit | SMS1340 Address |
+|------:|---------------:|
+| D1 | 26 |
+| D2 | 28 |
+| D3 | 30 |
+| D4 | 32 |
+| D5 | 34 |
+| D6 | 36 |
+| D7 | 38 |
+
 ## Tests
 
-The `Tests` directory contains experimental sketches used to identify and verify the SMS1340 LCD segments.
+The `LCD_Tests` directory contains experimental and verified
+sketches used to identify and test the SMS1340 LCD.
 
 ### SMS1340 Segment Mapper
 
-`Tests/SMS1340_Segment_Mapper.ino`
+`LCD_Tests/SMS1340_Segment_Mapper.ino`
 
-This program automatically tests INDEX 0 through INDEX 49, illuminating one LCD segment at a time.
+This program automatically tests INDEX 0 through INDEX 49,
+illuminating one LCD segment at a time.
 
 Serial Monitor:
 
@@ -96,12 +120,101 @@ Serial Monitor:
 
 The test uses the original SMS1340 LCD communication routines.
 
-## Project Status
+This sketch was used to create the SMS1340 segment map documented
+in this repository.
 
-The SMS1340 segment map is being documented progressively.
+## Working Firmware
 
-Additional segments and functions will be verified as the firmware development continues.
+### SMS1340 Encoder + STEP
+
+`LCD_Tests/SMS1340_Encoder_STEP_Working.ino`
+
+This is the first verified working firmware version combining:
+
+- SMS1340 7-digit frequency display
+- Arduino Nano ATmega328P
+- Rotary encoder
+- Frequency adjustment
+- 7-position STEP selection
+- STEP indicator under the selected frequency digit
+
+### Frequency STEP Positions
+
+| STEP | Frequency Increment | Display Position |
+|-----:|--------------------:|------------------|
+| 0 | 1 Hz | D7 |
+| 1 | 10 Hz | D6 |
+| 2 | 100 Hz | D5 |
+| 3 | 1 kHz | D4 |
+| 4 | 10 kHz | D3 |
+| 5 | 100 kHz | D2 |
+| 6 | 1 MHz | D1 |
+
+The STEP indicator positions were identified from the SMS1340
+segment map:
+
+| STEP Position | SMS1340 INDEX |
+|--------------|--------------:|
+| D1 | 24 |
+| D2 | 25 |
+| D3 | 26 |
+| D4 | 27 |
+| D5 | 28 |
+| D6 | 29 |
+| D7 | 30 |
+
+The firmware uses these indexes to place the STEP indicator under
+the correct frequency digit.
+
+## Verified Hardware Status
+
+The following functions have been tested on the actual hardware:
+
+- 7-digit frequency display
+- Rotary encoder
+- Frequency increment/decrement
+- 7 STEP positions
+- STEP indicator/cursor
+- Correct relationship between STEP and frequency digit
+
+The current firmware is considered a **working reference version**.
+
+Future development should be made from a copy of this file so that
+this verified version remains available as a known-good reference.
+
+## Current Project Status
+
+### Verified
+
+- SMS1340 segment mapping
+- D1 identification
+- D1-D7 frequency display
+- Rotary encoder
+- STEP button
+- Seven STEP positions
+- STEP indicator/cursor
+
+### Not Yet Integrated
+
+- Si5351
+- VFO
+- BFO
+- Operating modes
+- Final radio firmware
+
+Additional SMS1340 segments and functions will be verified as the
+firmware development continues.
+
+## Development Philosophy
+
+The project is being developed incrementally.
+
+Each important working stage is saved as a separate sketch before
+moving to the next stage. This provides a permanent reference and
+makes it possible to return to a known-working version if a later
+experiment introduces a problem.
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+This project is licensed under the **GNU General Public License v3.0
+(GPL-3.0)**.
