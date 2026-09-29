@@ -102,6 +102,19 @@ The physical frequency digit addresses are:
 | D6 | 36 |
 | D7 | 38 |
 
+## Decimal Points
+
+The frequency display uses two decimal points to produce the format:
+
+**XX.XXX.XX**
+
+The verified LCD locations are:
+
+- First decimal point: LCD address `0`, bit `7`
+- Second decimal point: LCD address `2`, bit `4`
+
+These locations are used by the working frequency display firmware.
+
 ## Tests
 
 The `LCD_Tests` directory contains experimental and verified
@@ -166,55 +179,33 @@ segment map:
 The firmware uses these indexes to place the STEP indicator under
 the correct frequency digit.
 
-## Verified Hardware Status
+## Voltage Display
 
-The following functions have been tested on the actual hardware:
+A separate test was performed using the original SMS1340 voltage
+display routine.
 
-- 7-digit frequency display
-- Rotary encoder
-- Frequency increment/decrement
-- 7 STEP positions
-- STEP indicator/cursor
-- Correct relationship between STEP and frequency digit
+The voltage numeric display does **not** use the VOLTAGE indicator
+address itself. The verified numeric voltage display uses the
+following LCD addresses:
 
-The current firmware is considered a **working reference version**.
+| Voltage Digit | LCD Address |
+|--------------|------------:|
+| First digit | 14 |
+| Second digit | 16 |
+| Third digit | 18 |
 
-Future development should be made from a copy of this file so that
-this verified version remains available as a known-good reference.
+The original voltage routine uses:
 
-## Current Project Status
+- `Mask1[]` for the first voltage digit
+- `Mask3[]` for the second and third voltage digits
 
-### Verified
+A fixed test value of:
 
-- SMS1340 segment mapping
-- D1 identification
-- D1-D7 frequency display
-- Rotary encoder
-- STEP button
-- Seven STEP positions
-- STEP indicator/cursor
+**13.5 V**
 
-### Not Yet Integrated
+was successfully displayed on the physical SMS1340 LCD.
 
-- Si5351
-- VFO
-- BFO
-- Operating modes
-- Final radio firmware
+The test value is represented internally as:
 
-Additional SMS1340 segments and functions will be verified as the
-firmware development continues.
-
-## Development Philosophy
-
-The project is being developed incrementally.
-
-Each important working stage is saved as a separate sketch before
-moving to the next stage. This provides a permanent reference and
-makes it possible to return to a known-working version if a later
-experiment introduces a problem.
-
-## License
-
-This project is licensed under the **GNU General Public License v3.0
-(GPL-3.0)**.
+```text
+135
